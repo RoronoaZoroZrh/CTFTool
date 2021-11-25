@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace CTFTool
@@ -15,6 +8,13 @@ namespace CTFTool
         public Form_Main()
         {
             InitializeComponent();
+        }
+
+        //简单题分析
+        private void MenuItem_Pwn_Simple_Click(object sender, EventArgs e)
+        {
+            PwnSimpleAnal oPwnSimpleAnal = new PwnSimpleAnal(RichTextBox_Input, RichTextBox_Explain, RichTextBox_Output);
+            oPwnSimpleAnal.Start();
         }
     }
 }
