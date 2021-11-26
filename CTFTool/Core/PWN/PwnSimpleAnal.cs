@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace CTFTool
@@ -36,6 +37,28 @@ namespace CTFTool
         //直接可获取shell
         private Boolean PwnExistShellCode()
         {
+            if (m_cIn.Text.Contains("system(\"/bin/sh\")"))
+            {
+                //说明
+                m_cExp.Text += "函数中存在ShellCode!";
+
+                //输出
+                m_cOut.Text += "from pwn import *\n";
+                m_cOut.Text += "\n";
+                Regex vRegex = new Regex("(.*?):(\\d+)", RegexOptions.Multiline);
+                Match vMatch = vRegex.Match(m_cIn.Text);
+                if (vMatch.Success)
+                {
+                    m_cOut.Text += "process = remote('" + vMatch.Groups[1].Value + "', " + vMatch.Groups[2].Value + ")\n";
+                }
+                else
+                {
+                    m_cOut.Text += "process = remote('IP', Port)\n";
+                }
+                m_cOut.Text += "process.interactive()\n";
+
+                return true;
+            }
             return false;
         }
     }
