@@ -35,6 +35,7 @@ namespace CTFTool
             this.MenuItem_Web = new System.Windows.Forms.ToolStripMenuItem();
             this.MenuItem_Reverse = new System.Windows.Forms.ToolStripMenuItem();
             this.MenuItem_Pwn = new System.Windows.Forms.ToolStripMenuItem();
+            this.MenuItem_Pwn_Simple = new System.Windows.Forms.ToolStripMenuItem();
             this.MenuItem_Other = new System.Windows.Forms.ToolStripMenuItem();
             this.GroupBox_Output = new System.Windows.Forms.GroupBox();
             this.RichTextBox_Output = new System.Windows.Forms.RichTextBox();
@@ -42,7 +43,7 @@ namespace CTFTool
             this.RichTextBox_Input = new System.Windows.Forms.RichTextBox();
             this.GroupBox_Explain = new System.Windows.Forms.GroupBox();
             this.RichTextBox_Explain = new System.Windows.Forms.RichTextBox();
-            this.MenuItem_Pwn_Simple = new System.Windows.Forms.ToolStripMenuItem();
+            this.MenuItem_Pwn_Ret2Libc = new System.Windows.Forms.ToolStripMenuItem();
             this.Menu_Main.SuspendLayout();
             this.GroupBox_Output.SuspendLayout();
             this.GroupBox_Input.SuspendLayout();
@@ -91,10 +92,18 @@ namespace CTFTool
             // MenuItem_Pwn
             // 
             this.MenuItem_Pwn.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.MenuItem_Pwn_Simple});
+            this.MenuItem_Pwn_Simple,
+            this.MenuItem_Pwn_Ret2Libc});
             this.MenuItem_Pwn.Name = "MenuItem_Pwn";
             this.MenuItem_Pwn.Size = new System.Drawing.Size(56, 23);
             this.MenuItem_Pwn.Text = "PWN";
+            // 
+            // MenuItem_Pwn_Simple
+            // 
+            this.MenuItem_Pwn_Simple.Name = "MenuItem_Pwn_Simple";
+            this.MenuItem_Pwn_Simple.Size = new System.Drawing.Size(180, 24);
+            this.MenuItem_Pwn_Simple.Text = "简单题分析";
+            this.MenuItem_Pwn_Simple.Click += new System.EventHandler(this.MenuItem_Pwn_Simple_Click);
             // 
             // MenuItem_Other
             // 
@@ -162,12 +171,12 @@ namespace CTFTool
             this.RichTextBox_Explain.TabIndex = 0;
             this.RichTextBox_Explain.Text = "";
             // 
-            // MenuItem_Pwn_Simple
+            // MenuItem_Pwn_Ret2Libc
             // 
-            this.MenuItem_Pwn_Simple.Name = "MenuItem_Pwn_Simple";
-            this.MenuItem_Pwn_Simple.Size = new System.Drawing.Size(180, 24);
-            this.MenuItem_Pwn_Simple.Text = "简单题分析";
-            this.MenuItem_Pwn_Simple.Click += new System.EventHandler(this.MenuItem_Pwn_Simple_Click);
+            this.MenuItem_Pwn_Ret2Libc.Name = "MenuItem_Pwn_Ret2Libc";
+            this.MenuItem_Pwn_Ret2Libc.Size = new System.Drawing.Size(180, 24);
+            this.MenuItem_Pwn_Ret2Libc.Text = "Ret2Libc";
+            this.MenuItem_Pwn_Ret2Libc.Click += new System.EventHandler(this.MenuItem_Pwn_Ret2Libc_Click);
             // 
             // Form_Main
             // 
@@ -209,6 +218,7 @@ namespace CTFTool
         private System.Windows.Forms.RichTextBox RichTextBox_Explain;
         private System.Windows.Forms.RichTextBox RichTextBox_Output;
         private System.Windows.Forms.ToolStripMenuItem MenuItem_Pwn_Simple;
+        private System.Windows.Forms.ToolStripMenuItem MenuItem_Pwn_Ret2Libc;
     }
 }
 

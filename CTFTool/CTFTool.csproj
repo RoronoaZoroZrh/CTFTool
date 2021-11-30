@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\PWN\PwnRet2Libc.cs" />
     <Compile Include="Core\PWN\PwnSimpleAnal.cs" />
     <Compile Include="Forms\Form_Main.cs">
       <SubType>Form</SubType>

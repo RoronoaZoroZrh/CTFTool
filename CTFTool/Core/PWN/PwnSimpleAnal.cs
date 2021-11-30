@@ -45,19 +45,25 @@ namespace CTFTool
                 m_cExp.Text += "函数中存在ShellCode!";
 
                 //输出
-                m_cOut.Text += "from pwn import *\n";
-                m_cOut.Text += "\n";
+                m_cOut.Text += "from pwn import *\n\n";
+                m_cOut.Text += "context(os='linux', arch='amd64', log_level='debug')\n";
+                m_cOut.Text += "content = 0\n\n\n";
+                m_cOut.Text += "def main():\n";
+                m_cOut.Text += "\tif content == 1:\n";
+                m_cOut.Text += "\t\tpwn_process = process('./{NAME}')\n";
+                m_cOut.Text += "\telse:\n";
                 Regex vRegex = new Regex("(.*?):(\\d+)", RegexOptions.Multiline);
                 Match vMatch = vRegex.Match(m_cIn.Text);
                 if (vMatch.Success)
                 {
-                    m_cOut.Text += "process = remote('" + vMatch.Groups[1].Value + "', " + vMatch.Groups[2].Value + ")\n";
+                    m_cOut.Text += "\t\tpwn_process = remote('" + vMatch.Groups[1].Value + "', " + vMatch.Groups[2].Value + ")\n";
                 }
                 else
                 {
-                    m_cOut.Text += "process = remote('IP', Port)\n";
+                    m_cOut.Text += "\t\tpwn_process = remote('IP', Port)\n";
                 }
-                m_cOut.Text += "process.interactive()\n";
+                m_cOut.Text += "\tpwn_process.interactive()\n\n\n";
+                m_cOut.Text += "main()\n";
 
                 return true;
             }
